@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Users</title>
+</head>
+<body>
+    <h1>My Users</h1>
+    <div>
+        <form method="post" action="/users/" class="input-group">
+            {% csrf_token %}
+            {{ form }}
+            <div class="input-group mb-3">
+                <span class="input-group-text">First & Age</span>
+                <input type="text" aria-label="Name" name="name_user" class="form-control" value={{ current_name }}>
+                <input type="text" aria-label="Age" name="age_user" class="form-control" value={{ current_age }}>
+            </div>
+            <div class="form-check mb-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="activo" value="True" name="happy">
+                    <label class="form-check-label" for="inlineCheckbox1">Happy?</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value=True name="healthy">
+                    <label class="form-check-label" for="inlineCheckbox2">Healthy?</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value=True name="busy">
+                    <label class="form-check-label" for="inlineCheckbox3">Busy?</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit" value="ok">Search</button>
+                <button id="restore-btn" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".multi-collapse" aria-expanded="false" aria-controls="">Return all elements</button>
+            </div>
+            </form>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th class="multi-collapse att-1" id="btn-name" scope="col">Name
+                        <button id="name-btn" type="button" class="btn-close btn-close-white" data-bs-toggle="collapse" data-bs-target=".att-1" aria-label="Close" aria-expanded="false" aria-controls="multiCollapse1"></button>
+                    </th>
+                    <th class="multi-collapse att-2" id="btn-age" scope="col">Age
+                        <button id="age-btn" type="button" class="btn-close btn-close-white" data-bs-toggle="collapse" data-bs-target=".att-2" aria-label="Close" aria-expanded="false" aria-controls="multiCollapse2"></button>
+                    </th>
+                    <th class="multi-collapse att-3" id="btn-happy" scope="col">Happy
+                        <button id="happy-btn" type="button" class="btn-close btn-close-white" data-bs-toggle="collapse" data-bs-target=".att-3" aria-label="Close" aria-expanded="false" aria-controls="multiCollapse3"></button>
+                    </th>
+                    <th class="multi-collapse att-4" id="btn-healthy" scope="col">Healthly
+                        <button id="healthy-btn" type="button" class="btn-close btn-close-white" data-bs-toggle="collapse" data-bs-target=".att-4" aria-label="Close" aria-expanded="false" aria-controls="multiCollapse4"></button>
+                    </th>
+                    <th class="multi-collapse att-5" id="btn-busy" scope="col">Busy
+                        <button id="busy-btn" type="button" class="btn-close btn-close-white" data-bs-toggle="collapse" data-bs-target=".att-5" aria-label="Close" aria-expanded="false" aria-controls="multiCollapse5"></button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td class="multi-collapse att-1" id="multiCollapse1">{{user.name}}</td>
+                    <td class="multi-collapse att-2" id="multiCollapse2">{{user.age}}</td>
+                    <td class="multi-collapse att-3" id="multiCollapse3">{{user.happy}}</td>
+                    <td class="multi-collapse att-4" id="multiCollapse4">{{user.healthy}}</td>
+                    <td class="multi-collapse att-5" id="multiCollapse5">{{user.busy}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+<script>
+    let hidden_items = [];
+    const name_items = document.querySelectorAll('.att-1');
+    const name_btn = document.getElementById('name-btn');
+
+    const age_btn = document.getElementById('age-btn');
+    const age_items = document.querySelectorAll('.att-2');
+
+    const happy_btn = document.getElementById('happy-btn');
+    const happy_items = document.querySelectorAll('.att-3');
+
+    const healthy_btn = document.getElementById('healthy-btn');
+    const healthy_items = document.querySelectorAll('.att-4');
+
+    const busy_btn = document.getElementById('busy-btn');
+    const busy_items = document.querySelectorAll('.att-5');
+
+    const restore_btn = document.getElementById('restore-btn');
+    let name = name_btn.id;
+    name_btn.addEventListener("click", () => {
+       hidden_items.push(name_btn.id);
+
+       sessionStorage.setItem('name-column', name);
+    });
+    age_btn.addEventListener("click", () => {
+       hidden_items.push(age_btn.id);
+       let age = age_btn.id;
+       sessionStorage.setItem('age-column', age);
+    });
+    happy_btn.addEventListener("click", () => {
+       hidden_items.push(happy_btn.id);
+       let happy = happy_btn.id;
+       sessionStorage.setItem('happy-column', happy);
+    });
+    healthy_btn.addEventListener("click", () => {
+       hidden_items.push(healthy_btn.id);
+       let healthy = healthy_btn.id;
+       sessionStorage.setItem('healthy-column', healthy);
+    });
+    busy_btn.addEventListener("click", () => {
+       hidden_items.push(busy_btn.id);
+       let busy = busy_btn.id;
+       sessionStorage.setItem('busy-column', busy);
+    });
+    restore_btn.addEventListener("click", () => {
+       sessionStorage.removeItem('name-column');
+       sessionStorage.removeItem('age-column');
+       sessionStorage.removeItem('happy-column');
+       sessionStorage.removeItem('healthy-column');
+       sessionStorage.removeItem('busy-column');
+    });
+
+    window.onload = function(e){
+        let name_item = sessionStorage.getItem('name-column');
+        let age_item = sessionStorage.getItem('age-column');
+        let happy_item = sessionStorage.getItem('happy-column');
+        let healthy_item = sessionStorage.getItem('healthy-column');
+        let busy_item = sessionStorage.getItem('busy-column');
+
+        if(name_item != null){
+            if(name_item.length > 0 ){
+                name_items.forEach(element => element.classList.add('collapse'));
+            }
+        } else {
+            sessionStorage.setItem('name-column', '');
+        }
+        if(age_item != null){
+            if(age_item.length > 0){
+                age_items.forEach(element => element.classList.add('collapse'));
+            }
+        } else {
+            sessionStorage.setItem('age-column', '');
+        }
+        if(happy_item != null){
+           if(happy_item.length > 0){
+                happy_items.forEach(element => element.classList.add('collapse'));
+            }
+        } else {
+            sessionStorage.setItem('happy-column', '');
+        }
+        if(healthy_item != null){
+            if(healthy_item.length > 0){
+                healthy_items.forEach(element => element.classList.add('collapse'));
+            }
+        } else {
+            sessionStorage.setItem('healthy-column', '');
+        }
+        if(busy_item != null){
+            if(busy_item.length > 0){
+                busy_items.forEach(element => element.classList.add('collapse'));
+            }
+        } else {
+            sessionStorage.setItem('busy-column', '');
+        }
+    }
+
+</script>
+</body>
+</html>
